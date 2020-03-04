@@ -87,12 +87,12 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
     if field == "status": 
         review_status = ''
         if len(clinsig_list) == 0:
-            logging.warning("Record", record_id, "has no ClinicalSignificance in", elem[0].tag)
+            logging.warning(f"Record {record_id} has no ClinicalSignificance in {elem[0].tag}")
         else:
             try:
                 review_status = clinsig_list[0].find('./ReviewStatus').text
             except:
-                logging.warning("Record", record_id, "has no ReviewStatus field in", elem[0].tag)                
+                logging.warning(f"Record {record_id} has no ReviewStatus field in {elem[0].tag}")                
         return review_status
     elif field == "status_ordered":
         status_ordered = []
@@ -240,7 +240,7 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
             scv_ids = get_accession(cva, field='SCV')
             xml_dict[id_dict[ms_id]]['CLNSCVA'] += scv_ids  
             disease_name = '/'.join(get_traits(elem, field='traits'))
-            for i in range(len(scv_ids)):
+            for _ in range(len(scv_ids)):
                 xml_dict[id_dict[ms_id]]['CLNDNA'] += [disease_name]
  
         elem.clear()
