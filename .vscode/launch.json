@@ -9,7 +9,11 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "args":["-x=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/ClinVarFullRelease_2020-02.xml.gz",
+                    "-i=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.vcf.gz",
+                    "-o=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.xml_parsed.vcf",
+                    "-l=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.xml_parsed.log"]
         }
     ]
 }

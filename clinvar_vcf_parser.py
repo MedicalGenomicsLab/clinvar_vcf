@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import re
 import sys
 import io
@@ -123,14 +125,16 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
         elif not count:
             return desc_ordered
     elif field == "last_eval":
+        date_ordered = []
         if len(clinsig_list) == 0:
             logging.warning(f"Record {record_id} has no ClinicalSignificance in {elem[0].tag}")
         else:            
-            date_ordered = [x.attrib.get('DateLastEvaluated', '0000-00-00') for x in clinsig_list]
-            if len(date_ordered) == 0:
-                return '0000-00-00'
-            else:
-                return date_ordered
+            for clinsig in clinsig_list:
+                try: 
+                    date_ordered.append(clinsig.attrib.get('DateLastEvaluated', '0000-00-00'))
+                except:
+                    date_ordered.append('0000-00-00')
+        return date_ordered
     elif field == "comment":
         comment_ordered = []
         if len(clinsig_list) == 0:
@@ -143,16 +147,30 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
                     comment_ordered.append('')
             return comment_ordered
          
-def get_accession(elem, field=None, key='Acc', record_id=None):
+def get_submitdate(elem, field='submitterDate', record_id=None):
+    subid_list = [x.find('./ClinVarSubmissionID') for x in elem]
+    val_list = []
+    if len(subid_list) == 0:
+        logging.warning(f"Record {record_id} has no ClinVarSubmissionID field")
+    else:
+        for subid in subid_list:
+            try:
+                val_list.append(subid.attrib.get(field,'0000-00-00'))
+            except:
+                logging.warning(f"Record {record_id} has no {field} record")
+                val_list.append('0000-00-00')
+    return val_list
+        
+def get_accession(elem, field='SCV', record_id=None):
     acc_list = [x.find('./ClinVarAccession') for x in elem]
+    val_list = []
     try: 
-        val_list = []
         for acc in acc_list:
             if acc.attrib.get('Type') == field:
-                val_list.append(acc.attrib.get(key))
-        return val_list
+                val_list.append(acc.attrib.get('Acc'))
     except:
         logging.warning(f"Record {record_id} has no {field} record")
+    return val_list
 
 def get_traits(elem, field=None):
     # now find the disease(s) this variant is associated with
@@ -188,7 +206,7 @@ def write_vcf_header(header, out_file):
     vcf_header_dict={'CLNSUBA':'Submitters - all, ordered',
                 'CLNSIGA':'Clinical significance - all, ordered',
                 'CLNDATEA':'Date pathogenicity last reviewed - all, ordered',
-                'CLNDATEUPA':'Date accession last updated - all, ordered',
+                'CLNDATESUBA':'Submission date - all, ordered',
                 'CLNREVSTATA':'ClinVar review status for the Variation ID - all, ordered',
                 'CLNORA': 'Allele origin - all, ordered',
                 'CLNSCVA':'SCV IDs - all, ordered',
@@ -230,8 +248,8 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
         if ms_id in id_dict:
             xml_dict[id_dict[ms_id]]['CLNSUBA'] += get_submitters(elem)
             xml_dict[id_dict[ms_id]]['CLNSIGA'] += get_clinsig(cva, field='status_ordered', record_id=ms_id)
-            xml_dict[id_dict[ms_id]]['CLNDATEA'] += get_clinsig(cva, field='last_eval', record_id=ms_id) 
-            xml_dict[id_dict[ms_id]]['CLNDATEUPA'] += get_accession(cva, field='SCV', key='DateUpdated')
+            xml_dict[id_dict[ms_id]]['CLNDATEA'] += get_clinsig(cva, field='last_eval', record_id=ms_id)
+            xml_dict[id_dict[ms_id]]['CLNDATESUBA'] += get_submitdate(cva, field='submitterDate', record_id=ms_id)
             xml_dict[id_dict[ms_id]]['CLNREVSTATA'] += get_clinsig(cva, field='description', record_id=ms_id)        
             xml_dict[id_dict[ms_id]]['CLNORA'] += get_origin(cva, as_set=False) 
             xml_dict[id_dict[ms_id]]['CLNCOMA'] += get_clinsig(cva, field='comment', record_id=ms_id)  
@@ -269,10 +287,7 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
     # using append mode because header already written
     vcf_df.to_csv(out_file, mode='a', index=False, sep='\t', header=True)
 
-
-    
-    
-if __name__ == '__main__':
+def main ():
     parser = argparse.ArgumentParser(description='Parse ClinVar vcf and append extra information from the ClinVar XML')
     req_grp = parser.add_argument_group(title='Required')
     req_grp.add_argument('-x', '--xml',type=str, help='ClinVar XML file (can be .gz)', required=True)
@@ -280,17 +295,16 @@ if __name__ == '__main__':
     req_grp.add_argument('-o', '--out', type=str, help="Output vcf file name (non gz)",required=True)
     parser.add_argument('-l', '--log',type=str, help="Log file name")
     
-    
     args = parser.parse_args()
     
     if args.log:    
         logging.basicConfig(filename=args.log, level=logging.INFO)
     else:
         out_path = os.path.dirname(args.out)
-        logging.basicConfig(filename=(out_path + "/match_alleleid.log"), level=logging.WARNING)
+        logging.basicConfig(filename=(out_path + "/clinvar_vcf_parser.log"), level=logging.WARNING)
         
         
-    log = logging.getLogger(__name__)
+    #log = logging.getLogger(__name__)
     
     logging.info(f"Start time: {datetime.now()}\n")
     logging.info(args)
@@ -299,6 +313,11 @@ if __name__ == '__main__':
                        vcf_file=args.input)
 
     logging.info(f"\nEnd time: {datetime.now()}")
+    
+    
+if __name__ == '__main__':
+    main()
+
 
     
 
