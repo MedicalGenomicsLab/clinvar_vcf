@@ -247,10 +247,10 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
 
         if ms_id in id_dict:
             xml_dict[id_dict[ms_id]]['CLNSUBA'] += get_submitters(elem)
-            xml_dict[id_dict[ms_id]]['CLNSIGA'] += get_clinsig(cva, field='status_ordered', record_id=ms_id)
+            xml_dict[id_dict[ms_id]]['CLNREVSTATA'] += get_clinsig(cva, field='status_ordered', record_id=ms_id)
             xml_dict[id_dict[ms_id]]['CLNDATEA'] += get_clinsig(cva, field='last_eval', record_id=ms_id)
             xml_dict[id_dict[ms_id]]['CLNDATESUBA'] += get_submitdate(cva, field='submitterDate', record_id=ms_id)
-            xml_dict[id_dict[ms_id]]['CLNREVSTATA'] += get_clinsig(cva, field='description', record_id=ms_id)        
+            xml_dict[id_dict[ms_id]]['CLNSIGA'] += get_clinsig(cva, field='description', record_id=ms_id)        
             xml_dict[id_dict[ms_id]]['CLNORA'] += get_origin(cva, as_set=False) 
             xml_dict[id_dict[ms_id]]['CLNCOMA'] += get_clinsig(cva, field='comment', record_id=ms_id)  
             
