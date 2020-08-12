@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 #Visual studio code
-.vscode/
+/.vscode/
 
 # MacOS X file
 .DS_Store
