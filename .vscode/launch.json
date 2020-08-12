@@ -10,10 +10,10 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args":["-x=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/ClinVarFullRelease_2020-02.xml.gz",
-                    "-i=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.vcf.gz",
-                    "-o=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.xml_parsed.vcf",
-                    "-l=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20200203.xml_parsed.log"]
+            "args":["-x=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/ClinVarFullRelease_2017-04.xml.gz",
+                    "-i=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20170404.vcf.gz",
+                    "-o=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20170404.xml_parsed.vcf",
+                    "-l=/Users/olgak/Documents/Postdoc_Waddell/Misc/ClinVar_parser_VEP/clinvar_20170404.xml_parsed.log"]
         }
     ]
 }
