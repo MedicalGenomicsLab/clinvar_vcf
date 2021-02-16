@@ -66,7 +66,7 @@ def join_entries(d, with_sep='|'):
         if type(value) == set:
             value = sorted(value)
         if type(value) == set or type(value) == list:
-            value = [replace_sep(v, sep=[';','|',' ','"'], replace_with=[':',':','_','']) for v in value]
+            value = [replace_sep(v, sep=[';','|',' ','"',','], replace_with=[':',':','_','','&']) for v in value]
             d[key]=remove_newlines_and_tabs(with_sep.join(value))
         if value is None:
             d[key]=''
