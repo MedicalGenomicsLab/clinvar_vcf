@@ -43,14 +43,10 @@ def read_vcf(file):
     return (header,vcf)
 
 def split_multi_vcf(df):
-    #df_multi =  df[df['ALT'].str.contains(',', na = False)]
-    #df =  df[~df['ALT'].str.contains(',', na = False)]
-    #print("Multiallelic df pre-expansion:",df_multi.shape)
-    #print("Single allelic df pre-expansion:",df.shape)
-    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_rows', None) 
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', None)
-    pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.max_colwidth', -1) # change to None for new pandas
     #Write temp csv for splitting multiallelic variants into multiple rows (to increase speed)
     temp_output = io.StringIO()
     csv_writer = writer(temp_output)
@@ -58,7 +54,6 @@ def split_multi_vcf(df):
     for i, alts in enumerate(df.get("ALT")):
         temp_row = df.iloc[i].copy()
         if "," in alts:
-            print(temp_row)
             for n,alt in enumerate(alts.split(',')):
                 n+=1 #need to shift by 1 to match VCF CLNALLE indexing
                 temp_row["ALT"] = alt
@@ -84,8 +79,6 @@ def split_multi_vcf(df):
 
     temp_output.seek(0) # we need to get back to the start of the StringIO
     df_split = pd.read_csv(temp_output, header = None, names=df.columns)
-    print("Multiallelic df post-expansion:",df_split.shape)
-    #df_updated = pd.concat([df, df_multi_split], ignore_index=True)
     return(df_split)
 
 def split_vcf_info(df):
@@ -291,11 +284,11 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
     logging.info('Writing out updated vcf header')
     write_vcf_header(header,out_file)
     
-    print("VCF dataframe size:",vcf_df.shape)
+    logging.info(f"VCF dataframe size:{vcf_df.shape}")
 
     logging.info('Expanding multiallelic variants')
     vcf_df = split_multi_vcf(vcf_df)
-    print("VCF dataframe size post expansion:",vcf_df.shape)
+    logging.info(f"VCF dataframe size post expansion:{vcf_df.shape}")
     
     logging.info('Creating dictionary for looking up IDs')
     # (Only works when RCV IDs are in INFO vcf column - field CLNACC. Works with ClinVar vcf older than May 2017)
