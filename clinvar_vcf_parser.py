@@ -7,6 +7,7 @@ import os
 import gzip
 import argparse
 from collections import defaultdict
+from csv import writer 
 import xml.etree.ElementTree as ET
 import functools
 import operator
@@ -40,6 +41,59 @@ def read_vcf(file):
         sep='\t'
     )
     return (header,vcf)
+
+def split_multi_vcf(df):
+    pd.set_option('display.max_rows', None) 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
+    pd.set_option('display.max_colwidth', -1) # change to None for new pandas
+    #Write temp csv for splitting multiallelic variants into multiple rows (to increase speed)
+    temp_output = io.StringIO()
+    csv_writer = writer(temp_output)
+    
+    for i, alts in enumerate(df.get("ALT")):
+        temp_row = df.iloc[i].copy()
+        if "," in alts:
+            for n,alt in enumerate(alts.split(',')):
+                n+=1 #need to shift by 1 to match VCF CLNALLE indexing
+                temp_row["ALT"] = alt
+                new_info = []
+                for field in df.iloc[i]["INFO"].split(';'): # extract INFO field for each line
+                    if field.startswith("CLNALLE="):
+                        alt_info_n = [int(x) for x in field.replace("CLNALLE=","").split(',')]
+                        new_info.append("CLNALLE=1")
+                    elif field.startswith("CLN"):
+                        field_id,values = field.split("=")
+                        if n in alt_info_n: 
+                            alt_info_index = alt_info_n.index(n)
+                            value=values.split(",")[alt_info_index]
+                            new_info.append(f'{field_id}={value}')
+                        else:
+                            new_info.append(f'{field_id}=.')
+                    else:
+                        new_info.append(field) 
+                temp_row["INFO"] = ";".join(new_info)
+                csv_writer.writerow(temp_row)
+        else:
+            csv_writer.writerow(temp_row)
+
+    temp_output.seek(0) # we need to get back to the start of the StringIO
+    df_split = pd.read_csv(temp_output, header = None, names=df.columns)
+    return(df_split)
+
+def split_vcf_info(df):
+    info_df = {}
+    for i, info in enumerate(df.get("INFO")):
+        for field in info.split(';'):
+            if field.startswith("CLNACC="):
+                try:
+                    for RCV_id_v in field.split('=')[1].split('|'): # can have multiple IDs
+                        RCV_id = RCV_id_v.split('.')[0] #removing version
+                        RCV_id.startswith('RCV')
+                        info_df[RCV_id]= i #dictionary with RCV ids and line numbers
+                except:
+                    logging.warning(f"VCF {field} is not correctly formatted, should be CLNACC=RCVXXX")     
+    return info_df
 
 def reduce_list(l):
     return functools.reduce(operator.concat, l) 
@@ -221,19 +275,27 @@ def write_vcf_header(header, out_file):
         fout.write('\n'.join(header))
         fout.write('\n')
       
-def expand_clinvar_vcf(xml_file, vcf_file, out_file):
+def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
     
     logging.info('Reading in vcf file')
     header,vcf_df = read_vcf(vcf_file)
     
     logging.info('Writing out updated vcf header')
-    
+
     write_vcf_header(header,out_file)
     
     logging.info('Creating dictionary for looking up IDs')
-    # (Only works when ClinVar Variation IDs are in ID vcf column. ClinVar vcf older than May 2017 won't work)
-    id_dict=dict(zip(vcf_df['ID'],vcf_df.index))
-     
+    if pre_may_2017:
+        logging.info(f"VCF dataframe size:{vcf_df.shape}")
+        logging.info('Expanding multiallelic variants')
+        vcf_df = split_multi_vcf(vcf_df)
+        logging.info(f"VCF dataframe size post expansion:{vcf_df.shape}")
+        # (Only works when RCV IDs are in INFO vcf column - field CLNACC. Works with ClinVar vcf older than May 2017)
+        id_dict = split_vcf_info(vcf_df)
+    else:
+        # (Only works when ClinVar Variation IDs are in ID vcf column. ClinVar vcf older than May 2017 won't work)
+        id_dict=dict(zip(vcf_df['ID'],vcf_df.index))
+
     logging.info('Mining through XML file')
     xml_dict=defaultdict(lambda: defaultdict(list))
     n=0
@@ -241,25 +303,26 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file):
     context = ET.iterparse(get_handle(xml_file), events=("start", "end"))
     for event, elem in context:
         if elem.tag != 'ClinVarSet' or event != 'end':
-            continue 
+            continue
         ms_id = elem.find('.//MeasureSet').attrib.get('ID') 
+        key_id = elem.find('.//ClinVarAccession').attrib.get('Acc') if pre_may_2017 else ms_id
         cva=elem.findall("./ClinVarAssertion")
 
-        if ms_id in id_dict:
-            xml_dict[id_dict[ms_id]]['CLNSUBA'] += get_submitters(elem)
-            xml_dict[id_dict[ms_id]]['CLNREVSTATA'] += get_clinsig(cva, field='status_ordered', record_id=ms_id)
-            xml_dict[id_dict[ms_id]]['CLNDATEA'] += get_clinsig(cva, field='last_eval', record_id=ms_id)
-            xml_dict[id_dict[ms_id]]['CLNDATESUBA'] += get_submitdate(cva, field='submitterDate', record_id=ms_id)
-            xml_dict[id_dict[ms_id]]['CLNSIGA'] += get_clinsig(cva, field='description', record_id=ms_id)        
-            xml_dict[id_dict[ms_id]]['CLNORA'] += get_origin(cva, as_set=False) 
-            xml_dict[id_dict[ms_id]]['CLNCOMA'] += get_clinsig(cva, field='comment', record_id=ms_id)  
+        if key_id in id_dict:
+            xml_dict[id_dict[key_id]]['CLNSUBA'] += get_submitters(elem)
+            xml_dict[id_dict[key_id]]['CLNREVSTATA'] += get_clinsig(cva, field='status_ordered', record_id=ms_id)
+            xml_dict[id_dict[key_id]]['CLNDATEA'] += get_clinsig(cva, field='last_eval', record_id=ms_id)
+            xml_dict[id_dict[key_id]]['CLNDATESUBA'] += get_submitdate(cva, field='submitterDate', record_id=ms_id)
+            xml_dict[id_dict[key_id]]['CLNSIGA'] += get_clinsig(cva, field='description', record_id=ms_id)        
+            xml_dict[id_dict[key_id]]['CLNORA'] += get_origin(cva, as_set=False) 
+            xml_dict[id_dict[key_id]]['CLNCOMA'] += get_clinsig(cva, field='comment', record_id=ms_id)  
             
             # Duplicate disease name if multiple SCV entries in one ClinVarSet record
             scv_ids = get_accession(cva, field='SCV')
-            xml_dict[id_dict[ms_id]]['CLNSCVA'] += scv_ids  
+            xml_dict[id_dict[key_id]]['CLNSCVA'] += scv_ids  
             disease_name = '/'.join(get_traits(elem, field='traits'))
             for _ in range(len(scv_ids)):
-                xml_dict[id_dict[ms_id]]['CLNDNA'] += [disease_name]
+                xml_dict[id_dict[key_id]]['CLNDNA'] += [disease_name]
  
         elem.clear()
         
@@ -294,6 +357,7 @@ def main ():
     req_grp.add_argument('-i', '--input', type=str, help="ClinVar input vcf file name (can be .gz)",required=True)
     req_grp.add_argument('-o', '--out', type=str, help="Output vcf file name (non gz)",required=True)
     parser.add_argument('-l', '--log',type=str, help="Log file name")
+    parser.add_argument('--pre-may-2017', action='store_true', default=False, help="Assume old ClinVar file format: RCV IDs are in INFO vcf column - field CLNACC")
     
     args = parser.parse_args()
     
@@ -310,7 +374,7 @@ def main ():
     logging.info(args)
     
     expand_clinvar_vcf(xml_file=args.xml, out_file=args.out, 
-                       vcf_file=args.input)
+                       vcf_file=args.input, pre_may_2017=args.pre_may_2017)
 
     logging.info(f"\nEnd time: {datetime.now()}")
     
