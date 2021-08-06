@@ -11,4 +11,4 @@ Two versions:
 
 **Usage**
 
-    python clinvar_vcf_parser.py -x [XML_file] -i [VCF_file] -o [VCF_parsed_file] -l [log_file]
+    python clinvar_vcf_parser.py [-h] -x XML -i INPUT -o OUT [-l LOG] [--pre-may-2017]
