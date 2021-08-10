@@ -1,5 +1,5 @@
 """
-Parse ClinVar vcf and append extra informatio  n from the ClinVar XML
+Parse ClinVar vcf and append extra information from the ClinVar XML
 """
 import argparse
 import gzip
@@ -53,7 +53,8 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
         if elem.tag != 'ClinVarSet' or event != 'end':
             continue
         ms_id = elem.find('.//MeasureSet').attrib.get('ID')
-        key_id = elem.find('.//ClinVarAccession').attrib.get('Acc') if pre_may_2017 else ms_id
+        key_id = (elem.find('.//ClinVarAccession').attrib.get('Acc')
+                  if pre_may_2017 else ms_id)
         cva = elem.findall('./ClinVarAssertion')
 
         if key_id in id_dict:
@@ -71,7 +72,8 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
             xml_dict[id_dict[key_id]]['CLNCOMA'] += get_clinsig(
                     cva, field='comment', record_id=ms_id)
 
-            # Duplicate disease name if multiple SCV entries in one ClinVarSet record
+            # Duplicate disease name if multiple SCV entries in one ClinVarSet
+            # record
             scv_ids = get_accession(cva, field='SCV')
             xml_dict[id_dict[key_id]]['CLNSCVA'] += scv_ids
             disease_name = '/'.join(get_traits(elem, field='traits'))
@@ -91,12 +93,14 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
     # Add extra column to vcf dataframe with info extracted from xml
     for key, value in xml_dict.items():
         xml_dict[key] = join_entries(value)  # join xml entries into strings
-        vcf_df.at[key, 'INFO_add'] = ';'.join([k + '=' + v for k, v in xml_dict[key].items()])
+        vcf_df.at[key, 'INFO_add'] = ';'.join(
+            [k + '=' + v for k, v in xml_dict[key].items()])
 
     logging.info('Combining original INFO column with info extracted from xml')
     vcf_df['INFO_updated'] = vcf_df['INFO'] + ';' + vcf_df['INFO_add']
     vcf_df['INFO_updated'] = vcf_df['INFO_updated'].fillna(vcf_df['INFO'])
-    vcf_df = vcf_df.drop(columns=['INFO_add', 'INFO']).rename(columns={'INFO_updated': 'INFO'})
+    vcf_df = vcf_df.drop(columns=['INFO_add', 'INFO']).rename(
+        columns={'INFO_updated': 'INFO'})
 
     logging.info('Writing out the main VCF body to output file')
     # using append mode because header already written
@@ -397,7 +401,7 @@ def split_multi_vcf(df):
     pd.set_option('display.max_rows', None)
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', None)
-    pd.set_option('display.max_colwidth', -1)  # change to None for new pandas
+    pd.set_option('display.max_colwidth', None)  # change to None for new pandas
     # Write temp csv for splitting multiallelic variants into multiple rows
     # (to increase speed)
     temp_output = io.StringIO()

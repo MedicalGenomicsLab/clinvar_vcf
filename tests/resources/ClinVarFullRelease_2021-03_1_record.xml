@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ReleaseSet Dated="2021-03-02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Type="full" xsi:noNamespaceSchemaLocation="http://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/clinvar_public_1.64.xsd">
+
+<ClinVarSet ID="38756179">
+  <RecordStatus>current</RecordStatus>
+  <Title>BCAM, EX3-4DEL AND BLOOD GROUP--LUTHERAN NULL</Title>
+  <ReferenceClinVarAssertion DateCreated="2012-08-13" DateLastUpdated="2019-03-30" ID="57973">
+    <ClinVarAccession Acc="RCV000000470" Version="4" Type="RCV" DateUpdated="2019-03-31"/>
+    <RecordStatus>current</RecordStatus>
+    <ClinicalSignificance DateLastEvaluated="2007-03-01">
+      <ReviewStatus>no assertion criteria provided</ReviewStatus>
+      <Description>Pathogenic</Description>
+    </ClinicalSignificance>
+    <Assertion Type="variation to disease"/>
+    <ObservedIn>
+      <Sample>
+        <Origin>germline</Origin>
+        <Species TaxonomyId="9606">human</Species>
+        <AffectedStatus>not provided</AffectedStatus>
+      </Sample>
+      <Method>
+        <MethodType>literature only</MethodType>
+      </Method>
+      <ObservedData ID="37871600">
+        <Attribute Type="Description">For discussion of the deletion of exons 3 and 4 in the BCAM gene that was found in compound heterozygous state in a patient with the Lutheran null blood group phenotype (247420) by Karamatic Crew et al. (2007), see 612773.0003.</Attribute>
+        <Citation Type="general">
+          <ID Source="PubMed">17319831</ID>
+        </Citation>
+      </ObservedData>
+    </ObservedIn>
+    <MeasureSet Type="Variant" ID="441" Acc="VCV000000441" Version="1">
+      <Measure Type="Deletion" ID="15480">
+        <Name>
+          <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
+        </Name>
+        <AttributeSet>
+          <Attribute Type="nucleotide change">EX3-4DEL</Attribute>
+          <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
+        </AttributeSet>
+        <CytogeneticLocation>19q13.2</CytogeneticLocation>
+        <MeasureRelationship Type="asserted, but not computed">
+          <Name>
+            <ElementValue Type="Preferred">basal cell adhesion molecule (Lutheran blood group)</ElementValue>
+          </Name>
+          <Symbol>
+            <ElementValue Type="Preferred">BCAM</ElementValue>
+          </Symbol>
+          <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="19" Accession="NC_000019.10" start="44809059" stop="44821421" display_start="44809059" display_stop="44821421" Strand="+"/>
+          <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="19" Accession="NC_000019.9" start="45312315" stop="45324677" display_start="45312315" display_stop="45324677" variantLength="12363" Strand="+"/>
+          <XRef ID="4059" DB="Gene"/>
+          <XRef Type="MIM" ID="612773" DB="OMIM"/>
+          <XRef ID="HGNC:6722" DB="HGNC"/>
+        </MeasureRelationship>
+        <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
+      </Measure>
+      <Name>
+        <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
+      </Name>
+    </MeasureSet>
+    <TraitSet Type="Disease" ID="125">
+      <Trait ID="9638" Type="BloodGroup">
+        <Name>
+          <ElementValue Type="Preferred">BLOOD GROUP--LUTHERAN NULL</ElementValue>
+          <XRef Type="Allelic variant" ID="612773.0003" DB="OMIM"/>
+          <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
+          <XRef Type="Allelic variant" ID="612773.0005" DB="OMIM"/>
+          <XRef Type="Allelic variant" ID="612773.0006" DB="OMIM"/>
+        </Name>
+        <XRef ID="C4017284" DB="MedGen"/>
+      </Trait>
+    </TraitSet>
+  </ReferenceClinVarAssertion>
+  <ClinVarAssertion ID="20619">
+    <ClinVarSubmissionID localKey="612773.0004_BLOOD GROUP--LUTHERAN NULL" submitter="OMIM" submitterDate="2015-08-20" title="BCAM, EX3-4DEL_BLOOD GROUP--LUTHERAN NULL"/>
+    <ClinVarAccession Acc="SCV000020619" Version="3" Type="SCV" OrgID="3" OrganizationCategory="resource" OrgType="primary" DateUpdated="2019-03-31"/>
+    <RecordStatus>current</RecordStatus>
+    <ClinicalSignificance DateLastEvaluated="2007-03-01">
+      <ReviewStatus>no assertion criteria provided</ReviewStatus>
+      <Description>Pathogenic</Description>
+    </ClinicalSignificance>
+    <Assertion Type="variation to disease"/>
+    <ExternalID DB="OMIM" ID="612773.0004" Type="Allelic variant"/>
+    <ObservedIn>
+      <Sample>
+        <Origin>germline</Origin>
+        <Species>human</Species>
+        <AffectedStatus>not provided</AffectedStatus>
+      </Sample>
+      <Method>
+        <MethodType>literature only</MethodType>
+      </Method>
+      <ObservedData>
+        <Attribute Type="Description">For discussion of the deletion of exons 3 and 4 in the BCAM gene that was found in compound heterozygous state in a patient with the Lutheran null blood group phenotype (247420) by Karamatic Crew et al. (2007), see 612773.0003.</Attribute>
+        <Citation>
+          <ID Source="PubMed">17319831</ID>
+        </Citation>
+        <XRef DB="OMIM" ID="247420" Type="MIM"/>
+      </ObservedData>
+    </ObservedIn>
+    <MeasureSet Type="Variant">
+      <Measure Type="Variation">
+        <Name>
+          <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
+        </Name>
+        <AttributeSet>
+          <Attribute Type="NonHGVS">EX3-4DEL</Attribute>
+        </AttributeSet>
+        <MeasureRelationship Type="variant in gene">
+          <Symbol>
+            <ElementValue Type="Preferred">BCAM</ElementValue>
+          </Symbol>
+        </MeasureRelationship>
+        <XRef DB="OMIM" ID="612773.0004" Type="Allelic variant"/>
+      </Measure>
+    </MeasureSet>
+    <TraitSet Type="Disease">
+      <Trait Type="Disease">
+        <Name>
+          <ElementValue Type="Preferred">BLOOD GROUP--LUTHERAN NULL</ElementValue>
+        </Name>
+      </Trait>
+    </TraitSet>
+  </ClinVarAssertion>
+</ClinVarSet>
+</ReleaseSet>
