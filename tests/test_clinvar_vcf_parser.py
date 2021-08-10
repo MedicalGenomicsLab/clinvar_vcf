@@ -1,9 +1,25 @@
 import importlib.resources as pkg_resources
+import tempfile
 
+from pathlib import Path
 from unittest import TestCase
 import xml.etree.ElementTree as ET
 
-from clinvar_vcf.clinvar_vcf_parser import *
+from clinvar_vcf.clinvar_vcf_parser import (
+    expand_clinvar_vcf,
+    get_accession,
+    get_clinsig,
+    get_origin,
+    get_submitdate,
+    get_submitters,
+    get_traits,
+    join_entries,
+    read_vcf,
+    replace_sep,
+    remove_newlines_and_tabs,
+    split_multi_vcf,
+    split_vcf_info)
+
 import tests.resources
 
 
@@ -12,72 +28,95 @@ class TestModuleFunctions(TestCase):
     Test the top-level module functions in clinvar_vcf_parser
     """
 
+    def test_expand_clinvar_vcf(self):
+        with (
+            tempfile.TemporaryDirectory() as tempdir,
+            pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as xmlpath,
+            pkg_resources.path(
+                tests.resources,
+                'clinvar_20210302_1_record.vcf') as vcfpath):
+            outfile = Path(tempdir) / 'parsed.vcf'
+            expand_clinvar_vcf(str(xmlpath), str(vcfpath), outfile)
+            returned = outfile.read_text()
+            expected = pkg_resources.read_text(
+                tests.resources,
+                'clinvar_20210302_1_record_annotated.vcf')
+            self.assertEqual(returned, expected)
+
     def test_get_accession(self):
         """
         get_accession behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_accession(cva)
-            expected = ['SCV000020619']
-            self.assertEqual(returned, expected) 
+            expected = ['SCV001214463']
+            self.assertEqual(returned, expected)
 
     def test_get_clinsig_status_ordered(self):
         """
         get_clinsig behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_clinsig(cva, field='status_ordered')
-            expected = ['no assertion criteria provided']
+            expected = ['criteria provided, single submitter']
             self.assertEqual(returned, expected)
 
     def test_get_clinsig_last_eval(self):
         """
         get_clinsig behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_clinsig(cva, field='last_eval')
-            expected = ['2007-03-01']
+            expected = ['2019-12-11']
             self.assertEqual(returned, expected)
 
     def test_get_clinsig_description(self):
         """
         get_clinsig behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_clinsig(cva, field='description')
-            expected = ['Pathogenic']
+            expected = ['Uncertain significance']
             self.assertEqual(returned, expected)
 
     def test_get_clinsig_comment(self):
         """
         get_clinsig behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_clinsig(cva, field='comment')
-            expected = ['']
+            expected = ['This sequence change replaces alanine with threonine at codon 36 of the SAMD11 protein (p.Ala36Thr). The alanine residue is weakly conserved and there is a small physicochemical difference between alanine and threonine. The frequency data for this variant in the population databases is considered unreliable, as metrics indicate poor data quality at this position in the ExAC database. This variant has not been reported in the literature in individuals with SAMD11-related conditions. Algorithms developed to predict the effect of missense changes on protein structure and function output the following: SIFT: "Tolerated"; PolyPhen-2: "Benign"; Align-GVGD: "Class C0". The threonine amino acid residue is found in multiple mammalian species, suggesting that this missense change does not adversely affect protein function. These predictions have not been confirmed by published functional studies and their clinical significance is uncertain. In summary, the available evidence is currently insufficient to determine the role of this variant in disease. Therefore, it has been classified as a Variant of Uncertain Significance.']
             self.assertEqual(returned, expected)
 
     def test_get_origin(self):
         """
         get_origin behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_origin(cva, as_set=False)
@@ -88,34 +127,37 @@ class TestModuleFunctions(TestCase):
         """
         get_submitdate behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             cva = cvs.findall('./ClinVarAssertion')
             returned = get_submitdate(cva)
-            expected = ['2015-08-20']
+            expected = ['2020-02-06']
             self.assertEqual(returned, expected)
 
     def test_get_submitters(self):
         """
         get_submitters behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             returned = get_submitters(cvs)
-            expected = ['OMIM']
+            expected = ['Invitae']
             self.assertEqual(returned, expected)
 
     def test_get_traits(self):
         """
         get_traits behaves as expected
         """
-        with pkg_resources.path(tests.resources,
-            'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
+        with pkg_resources.path(
+                tests.resources,
+                'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
             returned = get_traits(cvs, field='traits')
-            expected = ['BLOOD GROUP--LUTHERAN NULL'] 
+            expected = ['not provided']
             self.assertEqual(returned, expected)
 
     def test_join_entries(self):
@@ -133,12 +175,12 @@ class TestModuleFunctions(TestCase):
         """
 
         with pkg_resources.path(tests.resources,
-                                'clinvar_20210302_10_records.vcf') as fpath:
+                                'clinvar_20210302_1_record.vcf') as fpath:
             header, vcf = read_vcf(str(fpath))
-            self.assertEqual(header[0], '##fileformat=VCFv4.1') 
+            self.assertEqual(header[0], '##fileformat=VCFv4.1')
             self.assertEqual(len(header), 27)
             self.assertEqual(vcf['#CHROM'][0], '1')
-            self.assertEqual(len(vcf), 10)
+            self.assertEqual(len(vcf), 1)
 
     def test_remove_newlines_and_tabs(self):
         """
@@ -162,7 +204,7 @@ class TestModuleFunctions(TestCase):
 
     def test_split_multi_vcf(self):
         """
-        split_multi_vcf works as expected on old-format vcf 
+        split_multi_vcf works as expected on old-format vcf
         """
         # record 7 has multiple ALT: A,C
         with pkg_resources.path(tests.resources,

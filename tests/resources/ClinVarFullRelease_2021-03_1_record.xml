@@ -1,123 +1,140 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ReleaseSet Dated="2021-03-02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Type="full" xsi:noNamespaceSchemaLocation="http://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/clinvar_public_1.64.xsd">
-
-<ClinVarSet ID="38756179">
+<ClinVarSet ID="58008146">
   <RecordStatus>current</RecordStatus>
-  <Title>BCAM, EX3-4DEL AND BLOOD GROUP--LUTHERAN NULL</Title>
-  <ReferenceClinVarAssertion DateCreated="2012-08-13" DateLastUpdated="2019-03-30" ID="57973">
-    <ClinVarAccession Acc="RCV000000470" Version="4" Type="RCV" DateUpdated="2019-03-31"/>
+  <Title>NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr) AND not provided</Title>
+  <ReferenceClinVarAssertion DateCreated="2020-04-15" DateLastUpdated="2020-08-20" ID="2418836">
+    <ClinVarAccession Acc="RCV001050361" Version="1" Type="RCV" DateUpdated="2020-08-20"/>
     <RecordStatus>current</RecordStatus>
-    <ClinicalSignificance DateLastEvaluated="2007-03-01">
-      <ReviewStatus>no assertion criteria provided</ReviewStatus>
-      <Description>Pathogenic</Description>
+    <ClinicalSignificance DateLastEvaluated="2019-12-11">
+      <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+      <Description>Uncertain significance</Description>
     </ClinicalSignificance>
     <Assertion Type="variation to disease"/>
     <ObservedIn>
       <Sample>
         <Origin>germline</Origin>
         <Species TaxonomyId="9606">human</Species>
-        <AffectedStatus>not provided</AffectedStatus>
+        <AffectedStatus>unknown</AffectedStatus>
       </Sample>
       <Method>
-        <MethodType>literature only</MethodType>
+        <MethodType>clinical testing</MethodType>
       </Method>
-      <ObservedData ID="37871600">
-        <Attribute Type="Description">For discussion of the deletion of exons 3 and 4 in the BCAM gene that was found in compound heterozygous state in a patient with the Lutheran null blood group phenotype (247420) by Karamatic Crew et al. (2007), see 612773.0003.</Attribute>
-        <Citation Type="general">
-          <ID Source="PubMed">17319831</ID>
-        </Citation>
+      <ObservedData ID="58542181">
+        <Attribute Type="Description">not provided</Attribute>
       </ObservedData>
     </ObservedIn>
-    <MeasureSet Type="Variant" ID="441" Acc="VCV000000441" Version="1">
-      <Measure Type="Deletion" ID="15480">
+    <MeasureSet Type="Variant" ID="846933" Acc="VCV000846933" Version="1">
+      <Measure Type="single nucleotide variant" ID="824438">
         <Name>
-          <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
+          <ElementValue Type="Preferred">NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr)</ElementValue>
         </Name>
+        <CanonicalSPDI>NC_000001.11:930187:G:A</CanonicalSPDI>
         <AttributeSet>
-          <Attribute Type="nucleotide change">EX3-4DEL</Attribute>
-          <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
+          <Attribute Accession="NM_152486" Version="3" Change="c.106G&gt;A" Type="HGVS, coding, RefSeq">NM_152486.3:c.106G&gt;A</Attribute>
         </AttributeSet>
-        <CytogeneticLocation>19q13.2</CytogeneticLocation>
-        <MeasureRelationship Type="asserted, but not computed">
+        <AttributeSet>
+          <Attribute Accession="NC_000001" Version="11" Change="g.930188G&gt;A" Type="HGVS, genomic, top level" integerValue="38">NC_000001.11:g.930188G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NC_000001" Version="10" Change="g.865568G&gt;A" Type="HGVS, genomic, top level, previous" integerValue="37">NC_000001.10:g.865568G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NM_152486" Version="2" Change="c.106G&gt;A" Type="HGVS, previous">NM_152486.2:c.106G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NP_689699" Version="2" Change="p.Ala36Thr" Type="HGVS, protein, RefSeq">NP_689699.2:p.Ala36Thr</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Type="MolecularConsequence">missense variant</Attribute>
+          <XRef ID="SO:0001583" DB="Sequence Ontology"/>
+          <XRef ID="NM_152486.3:c.106G&gt;A" DB="RefSeq"/>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Type="ProteinChange1LetterCode">A36T</Attribute>
+        </AttributeSet>
+        <CytogeneticLocation>1p36.33</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="930188" stop="930188" display_start="930188" display_stop="930188" variantLength="1" positionVCF="930188" referenceAlleleVCF="G" alternateAlleleVCF="A"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="865568" stop="865568" display_start="865568" display_stop="865568" variantLength="1" positionVCF="865568" referenceAlleleVCF="G" alternateAlleleVCF="A"/>
+        <MeasureRelationship Type="within single gene">
           <Name>
-            <ElementValue Type="Preferred">basal cell adhesion molecule (Lutheran blood group)</ElementValue>
+            <ElementValue Type="Preferred">sterile alpha motif domain containing 11</ElementValue>
           </Name>
           <Symbol>
-            <ElementValue Type="Preferred">BCAM</ElementValue>
+            <ElementValue Type="Preferred">SAMD11</ElementValue>
           </Symbol>
-          <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="19" Accession="NC_000019.10" start="44809059" stop="44821421" display_start="44809059" display_stop="44821421" Strand="+"/>
-          <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="19" Accession="NC_000019.9" start="45312315" stop="45324677" display_start="45312315" display_stop="45324677" variantLength="12363" Strand="+"/>
-          <XRef ID="4059" DB="Gene"/>
-          <XRef Type="MIM" ID="612773" DB="OMIM"/>
-          <XRef ID="HGNC:6722" DB="HGNC"/>
+          <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="923923" stop="944574" display_start="923923" display_stop="944574" Strand="+"/>
+          <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="861120" stop="879960" display_start="861120" display_stop="879960" variantLength="18841" Strand="+"/>
+          <XRef ID="148398" DB="Gene"/>
+          <XRef Type="MIM" ID="616765" DB="OMIM"/>
+          <XRef ID="HGNC:28706" DB="HGNC"/>
         </MeasureRelationship>
-        <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
       </Measure>
       <Name>
-        <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
+        <ElementValue Type="Preferred">NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr)</ElementValue>
       </Name>
     </MeasureSet>
-    <TraitSet Type="Disease" ID="125">
-      <Trait ID="9638" Type="BloodGroup">
+    <TraitSet Type="Disease" ID="9460">
+      <Trait ID="17556" Type="Disease">
         <Name>
-          <ElementValue Type="Preferred">BLOOD GROUP--LUTHERAN NULL</ElementValue>
-          <XRef Type="Allelic variant" ID="612773.0003" DB="OMIM"/>
-          <XRef Type="Allelic variant" ID="612773.0004" DB="OMIM"/>
-          <XRef Type="Allelic variant" ID="612773.0005" DB="OMIM"/>
-          <XRef Type="Allelic variant" ID="612773.0006" DB="OMIM"/>
+          <ElementValue Type="Preferred">not provided</ElementValue>
+          <XRef ID="13DG0619" DB="Developmental Genetics Unit,King Faisal Specialist Hospital &amp; Research Centre"/>
         </Name>
-        <XRef ID="C4017284" DB="MedGen"/>
+        <AttributeSet>
+          <Attribute Type="public definition">The term 'not provided' is registered in MedGen to support identification of submissions to ClinVar for which no condition was named when assessing the variant. 'not provided' differs from 'not specified', which is used when a variant is asserted to be benign, likely benign, or of uncertain significance for conditions that have not been specified.</Attribute>
+        </AttributeSet>
+        <XRef ID="CN517202" DB="MedGen"/>
       </Trait>
     </TraitSet>
   </ReferenceClinVarAssertion>
-  <ClinVarAssertion ID="20619">
-    <ClinVarSubmissionID localKey="612773.0004_BLOOD GROUP--LUTHERAN NULL" submitter="OMIM" submitterDate="2015-08-20" title="BCAM, EX3-4DEL_BLOOD GROUP--LUTHERAN NULL"/>
-    <ClinVarAccession Acc="SCV000020619" Version="3" Type="SCV" OrgID="3" OrganizationCategory="resource" OrgType="primary" DateUpdated="2019-03-31"/>
+  <ClinVarAssertion ID="2379839" SubmissionName="SUB6933801">
+    <ClinVarSubmissionID localKey="8613923|MedGen:CN517202" submittedAssembly="GRCh37" submitter="Invitae" submitterDate="2020-02-06"/>
+    <ClinVarAccession Acc="SCV001214463" Version="1" Type="SCV" OrgID="500031" OrganizationCategory="laboratory" OrgType="primary" DateUpdated="2020-04-15"/>
     <RecordStatus>current</RecordStatus>
-    <ClinicalSignificance DateLastEvaluated="2007-03-01">
-      <ReviewStatus>no assertion criteria provided</ReviewStatus>
-      <Description>Pathogenic</Description>
+    <ClinicalSignificance DateLastEvaluated="2019-12-11">
+      <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+      <Description>Uncertain significance</Description>
+      <Comment>This sequence change replaces alanine with threonine at codon 36 of the SAMD11 protein (p.Ala36Thr). The alanine residue is weakly conserved and there is a small physicochemical difference between alanine and threonine. The frequency data for this variant in the population databases is considered unreliable, as metrics indicate poor data quality at this position in the ExAC database. This variant has not been reported in the literature in individuals with SAMD11-related conditions. Algorithms developed to predict the effect of missense changes on protein structure and function output the following: SIFT: "Tolerated"; PolyPhen-2: "Benign"; Align-GVGD: "Class C0". The threonine amino acid residue is found in multiple mammalian species, suggesting that this missense change does not adversely affect protein function. These predictions have not been confirmed by published functional studies and their clinical significance is uncertain. In summary, the available evidence is currently insufficient to determine the role of this variant in disease. Therefore, it has been classified as a Variant of Uncertain Significance.</Comment>
     </ClinicalSignificance>
     <Assertion Type="variation to disease"/>
-    <ExternalID DB="OMIM" ID="612773.0004" Type="Allelic variant"/>
+    <ExternalID DB="Invitae" ID="8613923"/>
+    <AttributeSet>
+      <Attribute Type="AssertionMethod">Invitae Variant Classification Sherloc (09022015)</Attribute>
+      <Citation>
+        <ID Source="PubMed">28492532</ID>
+      </Citation>
+    </AttributeSet>
     <ObservedIn>
       <Sample>
         <Origin>germline</Origin>
-        <Species>human</Species>
-        <AffectedStatus>not provided</AffectedStatus>
+        <Species TaxonomyId="9606">human</Species>
+        <AffectedStatus>unknown</AffectedStatus>
       </Sample>
       <Method>
-        <MethodType>literature only</MethodType>
+        <MethodType>clinical testing</MethodType>
       </Method>
       <ObservedData>
-        <Attribute Type="Description">For discussion of the deletion of exons 3 and 4 in the BCAM gene that was found in compound heterozygous state in a patient with the Lutheran null blood group phenotype (247420) by Karamatic Crew et al. (2007), see 612773.0003.</Attribute>
-        <Citation>
-          <ID Source="PubMed">17319831</ID>
-        </Citation>
-        <XRef DB="OMIM" ID="247420" Type="MIM"/>
+        <Attribute Type="Description">not provided</Attribute>
       </ObservedData>
     </ObservedIn>
     <MeasureSet Type="Variant">
       <Measure Type="Variation">
-        <Name>
-          <ElementValue Type="Preferred">BCAM, EX3-4DEL</ElementValue>
-        </Name>
         <AttributeSet>
-          <Attribute Type="NonHGVS">EX3-4DEL</Attribute>
+          <Attribute Type="HGVS">NM_152486.2:c.106G&gt;A</Attribute>
         </AttributeSet>
         <MeasureRelationship Type="variant in gene">
           <Symbol>
-            <ElementValue Type="Preferred">BCAM</ElementValue>
+            <ElementValue Type="Preferred">SAMD11</ElementValue>
           </Symbol>
         </MeasureRelationship>
-        <XRef DB="OMIM" ID="612773.0004" Type="Allelic variant"/>
       </Measure>
     </MeasureSet>
     <TraitSet Type="Disease">
       <Trait Type="Disease">
         <Name>
-          <ElementValue Type="Preferred">BLOOD GROUP--LUTHERAN NULL</ElementValue>
+          <ElementValue Type="Preferred">not provided</ElementValue>
         </Name>
+        <XRef DB="MedGen" ID="CN517202" Type="CUI"/>
       </Trait>
     </TraitSet>
   </ClinVarAssertion>
