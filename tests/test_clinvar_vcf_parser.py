@@ -1,8 +1,12 @@
+import filecmp
 import importlib.resources as pkg_resources
+import os.path
+import shlex
+import sys
 import tempfile
 
 from pathlib import Path
-from unittest import TestCase
+from unittest import TestCase, skipIf
 import xml.etree.ElementTree as ET
 
 from clinvar_vcf.clinvar_vcf_parser import (
@@ -18,9 +22,19 @@ from clinvar_vcf.clinvar_vcf_parser import (
     replace_sep,
     remove_newlines_and_tabs,
     split_multi_vcf,
-    split_vcf_info)
+    split_vcf_info,
+    main)
 
 import tests.resources
+
+
+CV2021_XML = '/reference/data/clinvar/xml/ClinVarFullRelease_2021-03.xml.gz'
+CV2021_VCF = '/reference/data/clinvar/vcf_GRCh37/clinvar_20210302.vcf.gz'
+CV2021_OUT = ('/working/genomeinfo/share/olgaK/parse_ClinVar_vcfs/'
+              'parsed_vcf_2021Mar/clinvar_20210302.xml_parsed.vcf')
+
+CV2021_INTEGRATION_TEST_RESOURCES = all(
+    os.path.isfile(f) for f in (CV2021_XML, CV2021_VCF, CV2021_OUT))
 
 
 class TestModuleFunctions(TestCase):
@@ -244,3 +258,43 @@ class TestModuleFunctions(TestCase):
                 'RCV000116258': 10
             }
             self.assertEqual(returned, expected)
+
+
+class TestMain(TestCase):
+    """
+    Integration tests
+    """
+
+    @skipIf(not CV2021_INTEGRATION_TEST_RESOURCES,
+            'Runs only when integration test resources are available')
+    def test_cv2021(self):
+        argv = sys.argv[:]
+        try:
+            with tempfile.TemporaryDirectory() as tempdir:
+                outfile = Path(tempdir) / 'parsed.vcf'
+                logfile = Path(tempdir) / 'parsed.vcf.log'
+                sys.argv = shlex.split(
+                    f'clinvar_vcf_parser -x {CV2021_XML} -i {CV2021_VCF} '
+                    f'-o {outfile} -l {logfile}')
+                main()
+                if not filecmp.cmp(outfile, CV2021_OUT, shallow=False):
+                    diffmsg = [f'{outfile} differs from expected {CV2021_OUT}:']
+                    found = False
+                    with open(outfile) as f1, open(CV2021_OUT) as f2:
+                        for n, (line1, line2) in enumerate(zip(f1, f2), 1):
+                            if line1 != line2:
+                                found = True
+                                diffmsg.append(f'first difference at line {n}:')
+                                diffmsg.append(f' - {line2}')
+                                diffmsg.append(f' + {line1}')
+                        if not found:
+                            f1.seek(0)
+                            f2.seek(0)
+                            ll1, ll2 = len(f1.readlines()), len(f2.readlines())
+                            assert ll1 != ll2
+                            diffmsg.append(
+                                f'first {n} lines match but {outfile} has '
+                                f'{ll1} lines and {CV2021_VCF} has {ll2}')
+                    self.fail('\n'.join(diffmsg))
+        finally:
+            sys.argv = argv
