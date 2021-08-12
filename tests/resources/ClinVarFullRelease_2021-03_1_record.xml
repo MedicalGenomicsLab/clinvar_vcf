@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ReleaseSet Dated="2021-03-02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Type="full" xsi:noNamespaceSchemaLocation="http://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/clinvar_public_1.64.xsd">
+<ClinVarSet ID="58008146">
+  <RecordStatus>current</RecordStatus>
+  <Title>NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr) AND not provided</Title>
+  <ReferenceClinVarAssertion DateCreated="2020-04-15" DateLastUpdated="2020-08-20" ID="2418836">
+    <ClinVarAccession Acc="RCV001050361" Version="1" Type="RCV" DateUpdated="2020-08-20"/>
+    <RecordStatus>current</RecordStatus>
+    <ClinicalSignificance DateLastEvaluated="2019-12-11">
+      <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+      <Description>Uncertain significance</Description>
+    </ClinicalSignificance>
+    <Assertion Type="variation to disease"/>
+    <ObservedIn>
+      <Sample>
+        <Origin>germline</Origin>
+        <Species TaxonomyId="9606">human</Species>
+        <AffectedStatus>unknown</AffectedStatus>
+      </Sample>
+      <Method>
+        <MethodType>clinical testing</MethodType>
+      </Method>
+      <ObservedData ID="58542181">
+        <Attribute Type="Description">not provided</Attribute>
+      </ObservedData>
+    </ObservedIn>
+    <MeasureSet Type="Variant" ID="846933" Acc="VCV000846933" Version="1">
+      <Measure Type="single nucleotide variant" ID="824438">
+        <Name>
+          <ElementValue Type="Preferred">NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr)</ElementValue>
+        </Name>
+        <CanonicalSPDI>NC_000001.11:930187:G:A</CanonicalSPDI>
+        <AttributeSet>
+          <Attribute Accession="NM_152486" Version="3" Change="c.106G&gt;A" Type="HGVS, coding, RefSeq">NM_152486.3:c.106G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NC_000001" Version="11" Change="g.930188G&gt;A" Type="HGVS, genomic, top level" integerValue="38">NC_000001.11:g.930188G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NC_000001" Version="10" Change="g.865568G&gt;A" Type="HGVS, genomic, top level, previous" integerValue="37">NC_000001.10:g.865568G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NM_152486" Version="2" Change="c.106G&gt;A" Type="HGVS, previous">NM_152486.2:c.106G&gt;A</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Accession="NP_689699" Version="2" Change="p.Ala36Thr" Type="HGVS, protein, RefSeq">NP_689699.2:p.Ala36Thr</Attribute>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Type="MolecularConsequence">missense variant</Attribute>
+          <XRef ID="SO:0001583" DB="Sequence Ontology"/>
+          <XRef ID="NM_152486.3:c.106G&gt;A" DB="RefSeq"/>
+        </AttributeSet>
+        <AttributeSet>
+          <Attribute Type="ProteinChange1LetterCode">A36T</Attribute>
+        </AttributeSet>
+        <CytogeneticLocation>1p36.33</CytogeneticLocation>
+        <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="930188" stop="930188" display_start="930188" display_stop="930188" variantLength="1" positionVCF="930188" referenceAlleleVCF="G" alternateAlleleVCF="A"/>
+        <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="865568" stop="865568" display_start="865568" display_stop="865568" variantLength="1" positionVCF="865568" referenceAlleleVCF="G" alternateAlleleVCF="A"/>
+        <MeasureRelationship Type="within single gene">
+          <Name>
+            <ElementValue Type="Preferred">sterile alpha motif domain containing 11</ElementValue>
+          </Name>
+          <Symbol>
+            <ElementValue Type="Preferred">SAMD11</ElementValue>
+          </Symbol>
+          <SequenceLocation Assembly="GRCh38" AssemblyAccessionVersion="GCF_000001405.38" AssemblyStatus="current" Chr="1" Accession="NC_000001.11" start="923923" stop="944574" display_start="923923" display_stop="944574" Strand="+"/>
+          <SequenceLocation Assembly="GRCh37" AssemblyAccessionVersion="GCF_000001405.25" AssemblyStatus="previous" Chr="1" Accession="NC_000001.10" start="861120" stop="879960" display_start="861120" display_stop="879960" variantLength="18841" Strand="+"/>
+          <XRef ID="148398" DB="Gene"/>
+          <XRef Type="MIM" ID="616765" DB="OMIM"/>
+          <XRef ID="HGNC:28706" DB="HGNC"/>
+        </MeasureRelationship>
+      </Measure>
+      <Name>
+        <ElementValue Type="Preferred">NM_152486.3(SAMD11):c.106G&gt;A (p.Ala36Thr)</ElementValue>
+      </Name>
+    </MeasureSet>
+    <TraitSet Type="Disease" ID="9460">
+      <Trait ID="17556" Type="Disease">
+        <Name>
+          <ElementValue Type="Preferred">not provided</ElementValue>
+          <XRef ID="13DG0619" DB="Developmental Genetics Unit,King Faisal Specialist Hospital &amp; Research Centre"/>
+        </Name>
+        <AttributeSet>
+          <Attribute Type="public definition">The term 'not provided' is registered in MedGen to support identification of submissions to ClinVar for which no condition was named when assessing the variant. 'not provided' differs from 'not specified', which is used when a variant is asserted to be benign, likely benign, or of uncertain significance for conditions that have not been specified.</Attribute>
+        </AttributeSet>
+        <XRef ID="CN517202" DB="MedGen"/>
+      </Trait>
+    </TraitSet>
+  </ReferenceClinVarAssertion>
+  <ClinVarAssertion ID="2379839" SubmissionName="SUB6933801">
+    <ClinVarSubmissionID localKey="8613923|MedGen:CN517202" submittedAssembly="GRCh37" submitter="Invitae" submitterDate="2020-02-06"/>
+    <ClinVarAccession Acc="SCV001214463" Version="1" Type="SCV" OrgID="500031" OrganizationCategory="laboratory" OrgType="primary" DateUpdated="2020-04-15"/>
+    <RecordStatus>current</RecordStatus>
+    <ClinicalSignificance DateLastEvaluated="2019-12-11">
+      <ReviewStatus>criteria provided, single submitter</ReviewStatus>
+      <Description>Uncertain significance</Description>
+      <Comment>This sequence change replaces alanine with threonine at codon 36 of the SAMD11 protein (p.Ala36Thr). The alanine residue is weakly conserved and there is a small physicochemical difference between alanine and threonine. The frequency data for this variant in the population databases is considered unreliable, as metrics indicate poor data quality at this position in the ExAC database. This variant has not been reported in the literature in individuals with SAMD11-related conditions. Algorithms developed to predict the effect of missense changes on protein structure and function output the following: SIFT: "Tolerated"; PolyPhen-2: "Benign"; Align-GVGD: "Class C0". The threonine amino acid residue is found in multiple mammalian species, suggesting that this missense change does not adversely affect protein function. These predictions have not been confirmed by published functional studies and their clinical significance is uncertain. In summary, the available evidence is currently insufficient to determine the role of this variant in disease. Therefore, it has been classified as a Variant of Uncertain Significance.</Comment>
+    </ClinicalSignificance>
+    <Assertion Type="variation to disease"/>
+    <ExternalID DB="Invitae" ID="8613923"/>
+    <AttributeSet>
+      <Attribute Type="AssertionMethod">Invitae Variant Classification Sherloc (09022015)</Attribute>
+      <Citation>
+        <ID Source="PubMed">28492532</ID>
+      </Citation>
+    </AttributeSet>
+    <ObservedIn>
+      <Sample>
+        <Origin>germline</Origin>
+        <Species TaxonomyId="9606">human</Species>
+        <AffectedStatus>unknown</AffectedStatus>
+      </Sample>
+      <Method>
+        <MethodType>clinical testing</MethodType>
+      </Method>
+      <ObservedData>
+        <Attribute Type="Description">not provided</Attribute>
+      </ObservedData>
+    </ObservedIn>
+    <MeasureSet Type="Variant">
+      <Measure Type="Variation">
+        <AttributeSet>
+          <Attribute Type="HGVS">NM_152486.2:c.106G&gt;A</Attribute>
+        </AttributeSet>
+        <MeasureRelationship Type="variant in gene">
+          <Symbol>
+            <ElementValue Type="Preferred">SAMD11</ElementValue>
+          </Symbol>
+        </MeasureRelationship>
+      </Measure>
+    </MeasureSet>
+    <TraitSet Type="Disease">
+      <Trait Type="Disease">
+        <Name>
+          <ElementValue Type="Preferred">not provided</ElementValue>
+        </Name>
+        <XRef DB="MedGen" ID="CN517202" Type="CUI"/>
+      </Trait>
+    </TraitSet>
+  </ClinVarAssertion>
+</ClinVarSet>
+</ReleaseSet>
