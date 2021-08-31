@@ -76,7 +76,7 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
             # record
             scv_ids = get_accession(cva, field='SCV')
             xml_dict[id_dict[key_id]]['CLNSCVA'] += scv_ids
-            disease_name = '/'.join(get_traits(elem, field='traits'))
+            disease_name = '/'.join(get_traits(elem))
             for _ in range(len(scv_ids)):
                 xml_dict[id_dict[key_id]]['CLNDNA'] += [disease_name]
 
@@ -113,11 +113,11 @@ def get_accession(elem, field='SCV', record_id=None):
     """
     acc_list = [x.find('./ClinVarAccession') for x in elem]
     val_list = []
-    try:
+    try: # FIXME
         for acc in acc_list:
             if acc.attrib.get('Type') == field:
                 val_list.append(acc.attrib.get('Acc'))
-    except:
+    except AttributeError:
         logging.warning('Record %s has no %s record', record_id, field)
     return val_list
 
@@ -126,25 +126,13 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
     """
     Args:
         elem: parent XML element
-        field: specifies the element to interrogate
+        field: specifies the element to interrogate - 'status_ordered', 'description','last_eval','comment'
         count: optionally count description
         record_id: supply for detailed feeback in logging
 
     """
     clinsig_list = [item for x in elem for item in x.findall('./ClinicalSignificance')]
-    if field == 'status':
-        review_status = ''
-        if len(clinsig_list) == 0:
-            logging.warning('Record %s has no ClinicalSignificance in %s',
-                            record_id, elem[0].tag)
-        else:
-            try:
-                review_status = clinsig_list[0].find('./ReviewStatus').text
-            except:
-                logging.warning('Record %s has no ReviewStatus field in %s',
-                                record_id, elem[0].tag)
-        return review_status
-
+    
     if field == 'status_ordered':
         status_ordered = []
         if len(clinsig_list) == 0:
@@ -153,7 +141,7 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
         else:
             try:
                 status_ordered = [x.find('./ReviewStatus').text for x in clinsig_list]
-            except:
+            except AttributeError:
                 logging.warning('Record %s has no ReviewStatus field in %s',
                                 record_id, elem[0].tag)
         return status_ordered
@@ -166,7 +154,7 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
         else:
             try:
                 desc_ordered = [x.find('./Description').text for x in clinsig_list]
-            except:
+            except AttributeError:
                 logging.warning('Record %s has no Description field in %s',
                                 record_id, elem[0].tag)
         if count:
@@ -189,10 +177,7 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
                             record_id, elem[0].tag)
         else:
             for clinsig in clinsig_list:
-                try:
-                    date_ordered.append(clinsig.attrib.get('DateLastEvaluated', '0000-00-00'))
-                except:
-                    date_ordered.append('0000-00-00')
+                date_ordered.append(clinsig.attrib.get('DateLastEvaluated', '0000-00-00'))
         return date_ordered
 
     if field == 'comment':
@@ -204,7 +189,7 @@ def get_clinsig(elem, field=None, count=False, record_id=None):
             for clinsig in clinsig_list:
                 try:
                     comment_ordered.append(clinsig.find('./Comment').text)
-                except:
+                except AttributeError:
                     comment_ordered.append('')
             return comment_ordered
 
@@ -236,7 +221,7 @@ def get_origin(elem, as_set=True):
     for node in elem:
         try:
             origin_list.append(node.find('./ObservedIn/Sample/Origin').text)
-        except:
+        except AttributeError:
             origin_list.append('')
     if as_set:
         return set(origin_list)
@@ -254,11 +239,7 @@ def get_submitdate(elem, field='submitterDate', record_id=None):
                         record_id)
     else:
         for subid in subid_list:
-            try:
-                val_list.append(subid.attrib.get(field, '0000-00-00'))
-            except:
-                logging.warning('Record %s has no %s record', record_id, field)
-                val_list.append('0000-00-00')
+            val_list.append(subid.attrib.get(field, '0000-00-00'))
     return val_list
 
 
@@ -271,42 +252,24 @@ def get_submitters(elem, ordered=True):
     for submitter_node in elem.findall('.//ClinVarSubmissionID'):
         try:
             submitters.append(submitter_node.attrib['submitter'])
-        except ValueError:
+        except KeyError:
             return None
     if ordered:
         return submitters
     return set(submitters)
 
 
-def get_traits(elem, field=None):
+def get_traits(elem):
     """
-    Interrogate TraitSet elements for 'traits', 'mechanism' and 'xrefs'
+    Interrogate TraitSet elements for 'traits'
     """
     # now find the disease(s) this variant is associated with
-    for traitset in elem.findall('.//TraitSet'):
-
-        if field == 'traits':
-            trait_values = []
-            disease_name_nodes = traitset.findall('.//Name/ElementValue')
-            trait_values = [x.text for x in disease_name_nodes
-                            if x.attrib.get('Type') == 'Preferred']
-            return trait_values
-
-        if field == 'mechanism':
-            attribute_nodes = traitset.findall('.//AttributeSet/Attribute')
-            disease_mechanism = {x.text.strip() for x in attribute_nodes
-                                 if x.attrib.get('Type') == 'disease mechanism'}
-            return disease_mechanism
-
-        if field == 'xrefs':
-            # put all the cross references one column, it may contains
-            # NCBI gene ID, conditions ID in disease databases.
-            xref_nodes = traitset.findall('.//XRef')
-            xrefs = {f"{x.attrib.get('DB')}: {x.attrib.get('ID')}".replace(';', ',')
-                     for x in xref_nodes}
-            return xrefs
-
-        raise NotImplementedError(f'field {field} is not handled')
+    trait_values = []
+    for traitset in elem.findall('.//TraitSet'): 
+        disease_name_nodes = traitset.findall('.//Name/ElementValue')
+        trait_values.extend([x.text for x in disease_name_nodes
+                             if x.attrib.get('Type') == 'Preferred'])
+        return trait_values
 
 
 def join_entries(dct, with_sep='|'):
@@ -321,7 +284,7 @@ def join_entries(dct, with_sep='|'):
             value = sorted(value)
         if isinstance(value, (set, list)):
             value = [
-                replace_sep(v, sep=[';', '|', ' ', '"', ','],
+                replace_sep(string=v, sep=[';', '|', ' ', '"', ','],
                             replace_with=[':', ':', '_', '', '&'])
                 for v in value
             ]
@@ -365,26 +328,19 @@ def remove_newlines_and_tabs(string):
     return re.sub('[\t\n\r]', ' ', string)
 
 
-def replace_sep(string, sep=';', replace_with=':'):
+def replace_sep(string, sep, replace_with):
     """
     Args:
         string: the target string to perform replacement on
-        sep: string or list
-        replace_with: string or list
+        sep: list of separators to replace
+        replace_with: list of separators to use as replacement
     Returns:
         string with replacements made
     """
-    # sep and replace_with can both be lists or str
-    if isinstance(sep, list) and isinstance(replace_with, list):
-        for i, sep_0 in enumerate(sep):
-            string = string.replace(sep_0, replace_with[i])
-    elif isinstance(sep, list) and isinstance(replace_with, str):
-        for sep_0 in sep:
-            string = string.replace(sep_0, replace_with)
-    elif isinstance(sep, str) and isinstance(replace_with, list):
-        string = string.replace(sep, replace_with[0])
-    else:
-        string = string.replace(sep, replace_with)
+    
+    for i, sep_0 in enumerate(sep):
+        string = string.replace(sep_0, replace_with[i])
+
     return string
 
 
@@ -450,15 +406,13 @@ def split_vcf_info(df):
     for i, info in enumerate(df.get('INFO')):
         for field in info.split(';'):
             if field.startswith('CLNACC='):
-                try:
-                    for rcv_id_v in field.split('=')[1].split('|'):  # can have multiple IDs
-                        rcv_id = rcv_id_v.split('.')[0]  # removing version
-                        rcv_id.startswith('RCV')
-                        info_dct[rcv_id] = i  # dictionary with RCV ids and line numbers
-                except:
-                    logging.warning(
-                        'VCF %s is not correctly formatted, '
-                        'should be CLNACC=RCVXXX', field)
+                for rcv_id_v in field.split('=')[1].split('|'):  # can have multiple IDs
+                    rcv_id = rcv_id_v.split('.')[0]  # removing version
+                    if not rcv_id.startswith('RCV') and rcv_id != '':
+                        logging.warning(
+                        'VCF %s at index %s is not correctly formatted, '
+                        'should be CLNACC=RCVXXX', field, i)
+                    info_dct[rcv_id] = i  # dictionary with RCV ids and line numbers
     return info_dct
 
 

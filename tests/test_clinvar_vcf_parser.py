@@ -170,7 +170,7 @@ class TestModuleFunctions(TestCase):
                 tests.resources,
                 'ClinVarFullRelease_2021-03_1_record.xml') as fpath:
             cvs = ET.parse(fpath).getroot().find('./ClinVarSet')
-            returned = get_traits(cvs, field='traits')
+            returned = get_traits(cvs)
             expected = ['not provided']
             self.assertEqual(returned, expected)
 
