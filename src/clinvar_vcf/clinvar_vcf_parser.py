@@ -42,7 +42,7 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
     else:
         # (Only works when ClinVar Variation IDs are in ID vcf column.
         # ClinVar vcf older than May 2017 won't work)
-        id_dict = dict(zip(vcf_df['ID'], vcf_df.index))
+        id_dict = dict(zip(vcf_df['ID'], [{x} for x in vcf_df.index]))
 
     logging.info('Mining through XML file')
     xml_dict = defaultdict(lambda: defaultdict(list))
@@ -58,27 +58,28 @@ def expand_clinvar_vcf(xml_file, vcf_file, out_file, pre_may_2017=False):
         cva = elem.findall('./ClinVarAssertion')
 
         if key_id in id_dict:
-            xml_dict[id_dict[key_id]]['CLNSUBA'] += get_submitters(elem)
-            xml_dict[id_dict[key_id]]['CLNREVSTATA'] += get_clinsig(
-                    cva, field='status_ordered', record_id=ms_id)
-            xml_dict[id_dict[key_id]]['CLNDATEA'] += get_clinsig(
-                    cva, field='last_eval', record_id=ms_id)
-            xml_dict[id_dict[key_id]]['CLNDATESUBA'] += get_submitdate(
-                    cva, field='submitterDate', record_id=ms_id)
-            xml_dict[id_dict[key_id]]['CLNSIGA'] += get_clinsig(
-                    cva, field='description', record_id=ms_id)
-            xml_dict[id_dict[key_id]]['CLNORA'] += get_origin(
-                    cva, as_set=False)
-            xml_dict[id_dict[key_id]]['CLNCOMA'] += get_clinsig(
-                    cva, field='comment', record_id=ms_id)
+            for idx in id_dict[key_id]:
+                xml_dict[idx]['CLNSUBA'] += get_submitters(elem)
+                xml_dict[idx]['CLNREVSTATA'] += get_clinsig(
+                        cva, field='status_ordered', record_id=ms_id)
+                xml_dict[idx]['CLNDATEA'] += get_clinsig(
+                        cva, field='last_eval', record_id=ms_id)
+                xml_dict[idx]['CLNDATESUBA'] += get_submitdate(
+                        cva, field='submitterDate', record_id=ms_id)
+                xml_dict[idx]['CLNSIGA'] += get_clinsig(
+                        cva, field='description', record_id=ms_id)
+                xml_dict[idx]['CLNORA'] += get_origin(
+                        cva, as_set=False)
+                xml_dict[idx]['CLNCOMA'] += get_clinsig(
+                        cva, field='comment', record_id=ms_id)
 
-            # Duplicate disease name if multiple SCV entries in one ClinVarSet
-            # record
-            scv_ids = get_accession(cva, field='SCV')
-            xml_dict[id_dict[key_id]]['CLNSCVA'] += scv_ids
-            disease_name = '/'.join(get_traits(elem))
-            for _ in range(len(scv_ids)):
-                xml_dict[id_dict[key_id]]['CLNDNA'] += [disease_name]
+                # Duplicate disease name if multiple SCV entries in one ClinVarSet
+                # record
+                scv_ids = get_accession(cva, field='SCV')
+                xml_dict[idx]['CLNSCVA'] += scv_ids
+                disease_name = '/'.join(get_traits(elem))
+                for _ in range(len(scv_ids)):
+                    xml_dict[idx]['CLNDNA'] += [disease_name]
 
         elem.clear()
 
@@ -402,7 +403,7 @@ def split_vcf_info(df):
     Args:
         df: dataframe with INFO column
     """
-    info_dct = {}
+    info_dct = defaultdict(set)
     for i, info in enumerate(df.get('INFO')):
         for field in info.split(';'):
             if field.startswith('CLNACC='):
@@ -412,7 +413,7 @@ def split_vcf_info(df):
                         logging.warning(
                         'VCF %s at index %s is not correctly formatted, '
                         'should be CLNACC=RCVXXX', field, i)
-                    info_dct[rcv_id] = i  # dictionary with RCV ids and line numbers
+                    info_dct[rcv_id].add(i)  # dictionary with RCV ids and line numbers
     return info_dct
 
 

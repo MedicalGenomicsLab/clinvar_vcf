@@ -240,22 +240,27 @@ class TestModuleFunctions(TestCase):
         split_vcf_info works as expected on old-format vcf
         """
         with pkg_resources.path(tests.resources,
-                                'clinvar_20170404_10_records.vcf') as fpath:
+                                'clinvar_20170404_13_records.vcf') as fpath:
             header, vcf = read_vcf(str(fpath))
             split_vcf = split_multi_vcf(vcf)
             returned = split_vcf_info(split_vcf)
             expected = {
-                'RCV000162196': 0,
-                'RCV000148989': 1,
-                'RCV000148988': 2,
-                'RCV000424799': 3,
-                'RCV000422793': 4,
-                'RCV000116272': 5,
-                '': 6,
-                'RCV000193277': 7,
-                'RCV000250556': 8,
-                'RCV000235037': 9,
-                'RCV000116258': 10
+                'RCV000162196': {0},
+                'RCV000148989': {1},
+                'RCV000148988': {2},
+                'RCV000424799': {3},
+                'RCV000422793': {4},
+                'RCV000116272': {5},
+                '': {13,6},
+                'RCV000193277': {7},
+                'RCV000250556': {8},
+                'RCV000235037': {9},
+                'RCV000116258': {10},
+                'RCV000224503': {12},
+                'RCV000159614': {11,14,15},
+                'RCV000192572': {11,14,15},
+                'RCV000286085': {11,14,15}
+                
             }
             self.assertEqual(returned, expected)
 
